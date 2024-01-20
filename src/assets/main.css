@@ -1,0 +1,97 @@
+.smsbutton {
+  height: 50px;
+  width: 50px;
+  color: orangered;
+}
+
+.message {
+  left: 1570;
+  margin-left: 10px;
+  position: relative;
+
+}
+
+.smsbutton:hover {
+  cursor: pointer;
+  outline: none;
+  color: orange;
+  /* transition: 10 3s ease-in-out; */
+
+}
+
+.messagebox {
+  border: 2px solid gray;
+  background-color: rgb(233, 230, 230);
+  position: relative;
+  top: 30px;
+  left: 50px;
+  width: 430px;
+  height: 330px;
+  border-radius: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.smstextarea {
+  background-color: aliceblue;
+}
+
+.smscontent {
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  /* justify-content: center; */
+  align-items: center;
+}
+
+.sendbtn {
+  border: 1px solid black;
+  font-size: large;
+  font-weight: bold;
+  border-radius: 15px;
+  margin: 5px;
+  width: 80px;
+  height: 35px;
+  cursor: pointer;
+}
+
+.sendbtn:hover {
+  /* border: 2px solid black; */
+  color: white;
+  border-radius: 15px;
+  margin: 5px;
+  width: 80px;
+  height: 35px;
+  cursor: pointer;
+  background-color: green;
+}
+
+.closebtn {
+  font-size: large;
+  font-weight: bold;
+  border: 1px solid black;
+  border-radius: 15px;
+  margin: 5px;
+  width: 80px;
+  height: 35px;
+  cursor: pointer;
+}
+
+.msg{
+  display: none;
+}
+
+.closebtn:hover {
+  font-size: large;
+  font-weight: bold;
+  /* border: 2px solid black; */
+  background-color: red;
+  color: white;
+  border-radius: 15px;
+  margin: 5px;
+  width: 80px;
+  height: 35px;
+  cursor: pointer;
+}
