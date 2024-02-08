@@ -189,9 +189,9 @@ const EnrouteForpickup = () => {
                           <td className="td-main"
                             style={{ color: "#00ff00", fontWeight: "bold" }}
                           >{differentdate(res?.Order?.expecteddeliverydate)}</td>
-                          <td className="td-main"
+                          {/* <td className="td-main"
                             style={{ color: "rgb(212, 41, 41)", fontWeight: "bold" }}
-                          >{res?.Order?.shplinstructions}</td>
+                          >{res?.Order?.shplinstructions}</td> */}
                           <td className="td-main"
                             style={{ color: "rgb(247, 3, 145)", fontWeight: "bold" }}
                           >{res?.Enroute_remark ? res?.Enroute_remark : "no remark"}</td>

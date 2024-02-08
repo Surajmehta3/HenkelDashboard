@@ -91,75 +91,54 @@ export function onOriginChange(sO) {
   let selectedLocation = "";
 
   switch (sO) {
-    case "SHPL-GURGAON HARIYANA-SEIMENS HEALTHCARE PVT. LTD.":
-      selectedLocation = "Gurgaon";
-      break;
-    case "SHPL- KOLKATA AIRPORT- SIEMENS HEALTHCARE PVT.LTD.":
-      selectedLocation = "KOLKATA AIRPORT";
-      break;
-    case "SHPL- CHENNAI SEAPORT- SIEMENS HEALTHCARE PVT.LTD.":
-      selectedLocation = "Chennai Port";
-      break;
-    case "SHPL- DELHI AIRPORT- SIEMENS HEALTHCARE PVT.LTD.":
-      selectedLocation = "Delhi";
-      break;
-    case "SHPL - APML BHIWANDI- SIEMENS HEALTHCARE PVT LTD":
-      selectedLocation = "Bhiwandi";
-      break;
-    case "SHPL- BANGALORE AIRPORT- SIEMENS HEALTHCARE PVT.LTD.":
-      selectedLocation = "Bangalore";
-      break;
-    case "SHPL-APML CHENNAI- SIEMENS HEALTHCARE PVT.LTD.":
-      selectedLocation = "Chennai";
-      break;
-    case "SHPL-KOLKATA WAREHOUSE- SIEMENS HEALTHCARE PVT.LTD.":
-      selectedLocation = "Kolkata";
-      break;
-    case "SHPL-BANGALORE WAREHOUSE- SIEMENS HEALTHCARE PVT.LTD.":
-      selectedLocation = "Bangalore";
-      break;
-    case "SHPL-CHENNAI WAREHOUSE- SIEMENS HEALTHCARE PVT.LTD.":
-      selectedLocation = "Chennai";
-      break;
-    case "SHPL-DELHI WAREHOUSE- SIEMENS HEALTHCARE PVT.LTD.":
-      selectedLocation = "Delhi";
-      break;
-    case "SHPL - NHAVA SHEVA- SIEMENS HEALTHCARE PVT LTD":
-      selectedLocation = "Navi Mumbai";
-      break;
-    case "SHPL- KOLKATA SEAPORT- SIEMENS HEALTHCARE PVT.LTD.":
-      selectedLocation = "Kolkata";
-      break;
-    case "SHPL- CHENNAI AIRPORT- SIEMENS HEALTHCARE PVT.LTD":
-      selectedLocation = "Chennai";
-      break;
-    case "SHPL - BGR WAREHOUSE- SIEMENS HEALTHCARE PVT.LTD":
-      selectedLocation = "Bhiwandi";
-      break;
-    case "SHPL-APML BANGALORE- SIEMENS HEALTHCARE PVT.LTD.":
-      selectedLocation = "Bangalore";
-      break;
-    case "SHPL - APML CHOWK - SIEMENS HEALTHCARE PVT LTD":
-      selectedLocation = "Navi Mumbai";
-      break;
-    case "SHPL - MUMBAI AIRPORT - SIEMENS HEALTHCARE PVT LTD":
-      selectedLocation = "Mumbai";
-      break;
-    case "SHPL - PRESS METAL COMPANY - SIEMENS HEALTHCARE PVT. LTD.":
-      selectedLocation = "Bhiwandi";
-      break;
-    case "SHPL - RAJLAXMI LOGISTICS PARK- SIEMENS HEALTHCARE PVT LTD":
-      selectedLocation = "Bhiwandi";
-      break;
-    case "SHPL-Banglore-Factory-SIEMENS HEALTHCARE PVT.LTD.":
-      selectedLocation = "Bangalore";
-      break;
-
+   
+      case "Chennai Plant":
+        selectedLocation = "Chennai";
+        break;
+      case "Chennai W/h":
+        selectedLocation = "Chennai";
+        break;
+      case "HAIPL - 3PM Site Viscon":
+        selectedLocation = "Chakan";
+        break;
+      case "HAIPL - Kurkumbh Plant":
+        selectedLocation = "Kurkumbh";
+        break;
+      case "HAIPL - Lonikand, Garuda CDC":
+        selectedLocation = "Lonikand";
+        break;
+      case "HAT - Gurgaon ACCI W/h":
+        selectedLocation = "Gurgaon";
+        break;
+      case "HAT - Kolkatta W/H":
+        selectedLocation = "Kolkatta";
+        break;
+      case "HAT - Gurgaon TCI W/h":
+        selectedLocation = "Gurgaon";
+        break;
+      case "HAT - Jejuri Plant":
+        selectedLocation = "Kurkumbh";
+        break;
+      case "HAT - Kurkumbh Plant":
+        selectedLocation = "Kurkumbh";
+        break;
+      case "HAT - Lonikand W/h":
+        selectedLocation = "Lonikand";
+        break;
+      case "HAT - Rudrapur Plant":
+        selectedLocation = "Rudrapur";
+        break;
+      case "HAT - Vadpe W/h - Domestic":
+        selectedLocation = "Bhiwandi";
+        break;
+      case "HAT - Thane Plant":
+        selectedLocation = "Bhiwandi";
+        break;
     default:
       break;
   }
 
-  data[0] = "SIEMENS HEALTHCARE PRIVATE LIMITED";
+  data[0] = "HENKEL";
   data[1] = selectedLocation;
   data[2] = sO;
   data[3] = "Mumbai";

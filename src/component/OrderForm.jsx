@@ -29,6 +29,7 @@ export default function OrderForm() {
   const [mypickupdate, setpickupdate] = useState("");
   const [orderNumberCount, setOrderNumberCount] = useState([]);
   const [selectedAmount, setSelectedAmount] = useState("");
+  const [selectedTransportation, setSelectedTransportation] = useState('');
   const [ccNumbers, setCcNumbers] = useState({
     cc1: null,
     cc2: null,
@@ -75,7 +76,11 @@ export default function OrderForm() {
       setLoadingCharges("SHPL");
     }
   };
-
+  const handleChange = (event) => {
+    setSelectedTransportation(event.target.value);
+    // Reset selectedAmount when the transportation service changes
+    setSelectedAmount('');
+  };
   const handleUnloading = (e) => {
     // Destructuring
     const { name, checked } = e.target;
@@ -662,66 +667,66 @@ export default function OrderForm() {
     return data;
   };
 
-  const onMaterialChange = (e) => {
-    const material = e.target.value;
-    console.log(material, "material");
+//   const onMaterialChange = (e) => {
+//     const material = e.target.value;
+//     console.log(material, "material");
 
-    // switch case to check the material and set the nth vehicle
-    switch (material) {
-      case "MRI":
-        setTotalVeh(3);
-        setVeh(["SHPL - 20FT AIR SUSPENSION", "SHPL - 20 FT ODC", "SHPL - 20 FT ODC"]);
-        break;
-      case "RF":
-        setTotalVeh(1);
-        setVeh(["SHPL - 20 FT ODC"]);
-        break;
-      case "cios fit":
-        setTotalVeh(1);
-        setVeh(["SHPL - 20 FT ODC"]);
-        break;
-      case "CT":
-        setTotalVeh(1);
-        setVeh(["SHPL - 20 FT ODC"]);
-        break;
-      case "LBO":
-        setTotalVeh(3);
-        setVeh(["SHPL - PICK UP", "SHPL - PICK UP", "SHPL - 17ft VEHICLE"]);
-        break;
-      case "MI":
-        setTotalVeh(3);
-        setVeh(["SHPL - 20FT AIR SUSPENSION", "SHPL - 20 FT ODC", "SHPL - 20 FT ODC"]);
-        break;
-      case "Biograph Horizon":
-        setTotalVeh(3);
-        setVeh(["SHPL - 20FT AIR SUSPENSION", "SHPL - 20 FT ODC", "SHPL - 20 FT ODC"]);
-        break;
-      case "Symbia":
-        setTotalVeh(3);
-        setVeh(["SHPL - 20FT AIR SUSPENSION", "SHPL - 20 FT ODC", "SHPL - 20 FT ODC"]);
-        break;
-      case "Artis":
-        setTotalVeh(2);
-        setVeh(["SHPL - 20 FT ODC", "SHPL - 20 FT ODC"]);
-        break;
-      case "Mammomat":
-        setTotalVeh(1);
-        setVeh(["SHPL - 20 FT ODC"]);
-        break;
-      case "Multix":
-        setTotalVeh(1);
-        setVeh(["SHPL - 20 FT ODC"]);
-        break;
-      case "Mobilett elara max":
-        setTotalVeh(1);
-        setVeh(["SHPL - 20 FT ODC"]);
-        break;
-      case "Yasio max":
-        setTotalVeh(1);
-        setVeh(["SHPL - 20 FT ODC"]);
-        break;
-    }
-  };
+// // switch case to check the material and set the nth vehicle   
+//     switch (material) {
+//       case "MRI":
+//         setTotalVeh(3);
+//         setVeh(["SHPL - 20FT AIR SUSPENSION", "SHPL - 20 FT ODC", "SHPL - 20 FT ODC"]);
+//         break;
+//       case "RF":
+//         setTotalVeh(1);
+//         setVeh(["SHPL - 20 FT ODC"]);
+//         break;
+//       case "cios fit":
+//         setTotalVeh(1);
+//         setVeh(["SHPL - 20 FT ODC"]);
+//         break;
+//       case "CT":
+//         setTotalVeh(1);
+//         setVeh(["SHPL - 20 FT ODC"]);
+//         break;
+//       case "LBO":
+//         setTotalVeh(3);
+//         setVeh(["SHPL - PICK UP", "SHPL - PICK UP", "SHPL - 17ft VEHICLE"]);
+//         break;
+//       case "MI":
+//         setTotalVeh(3);
+//         setVeh(["SHPL - 20FT AIR SUSPENSION", "SHPL - 20 FT ODC", "SHPL - 20 FT ODC"]);
+//         break;
+//       case "Biograph Horizon":
+//         setTotalVeh(3);
+//         setVeh(["SHPL - 20FT AIR SUSPENSION", "SHPL - 20 FT ODC", "SHPL - 20 FT ODC"]);
+//         break;
+//       case "Symbia":
+//         setTotalVeh(3);
+//         setVeh(["SHPL - 20FT AIR SUSPENSION", "SHPL - 20 FT ODC", "SHPL - 20 FT ODC"]);
+//         break;
+//       case "Artis":
+//         setTotalVeh(2);
+//         setVeh(["SHPL - 20 FT ODC", "SHPL - 20 FT ODC"]);
+//         break;
+//       case "Mammomat":
+//         setTotalVeh(1);
+//         setVeh(["SHPL - 20 FT ODC"]);
+//         break;
+//       case "Multix":
+//         setTotalVeh(1);
+//         setVeh(["SHPL - 20 FT ODC"]);
+//         break;
+//       case "Mobilett elara max":
+//         setTotalVeh(1);
+//         setVeh(["SHPL - 20 FT ODC"]);
+//         break;
+//       case "Yasio max":
+//         setTotalVeh(1);
+//         setVeh(["SHPL - 20 FT ODC"]);
+//         break;
+//     }
+//   };
 
   const handleClick = () => {
     if (!isAnimating) {
@@ -742,18 +747,18 @@ export default function OrderForm() {
     }));
   };
 
-  const handleVeh2Index = (e) => {
-    setVehicleIndex((prevState) => ({
-      ...prevState,
-      vehicle2Index: true,
-    }));
-  };
-  const handleVeh3Index = (e) => {
-    setVehicleIndex((prevState) => ({
-      ...prevState,
-      vehicle3Index: true,
-    }));
-  };
+  // const handleVeh2Index = (e) => {
+  //   setVehicleIndex((prevState) => ({
+  //     ...prevState,
+  //     vehicle2Index: true,
+  //   }));
+  // };
+  // const handleVeh3Index = (e) => {
+  //   setVehicleIndex((prevState) => ({
+  //     ...prevState,
+  //     vehicle3Index: true,
+  //   }));
+  // };
   useEffect(() => {
     var token = sessionStorage.getItem("id");
     if (token) {
@@ -904,7 +909,8 @@ export default function OrderForm() {
                       <select
                         name="tranportationservice"
                         id="tranportationservice"
-                        onChange={handleChanges}
+                        onChange={handleChange}
+                        value={selectedTransportation}
                         required
                       >
                         <option value="">--Select--</option>
@@ -1049,14 +1055,16 @@ export default function OrderForm() {
                         </select>
                       </div>
                     )}
-                   
+                    {selectedTransportation === 'PTL' && (
                     <div>
-                      <label>Amount</label>
+                      <label>Capacity</label>
                       <input
                         value={selectedAmount}
                         type="text"
+                        onChange={(e) => setSelectedAmount(e.target.value)}
                       />
                     </div>
+                    )}
 
                     <div className="orderform-checkbox-input">
                       <label htmlFor="">Loading Scope:</label>
@@ -1275,31 +1283,16 @@ export default function OrderForm() {
                         name="material"
                         onChange={(e) => {
                           handleChanges(e);
-                          onMaterialChange(e);
+                          // onMaterialChange(e);
                         }}
                         required
                       >
                         <option value="">--Select--</option>
-                        <option value="MRI">MRI</option>
-                        <option value="RF">RF Cabin</option>
-                        {/* <!-- EXTRA --> */}
-                        <option value="Biograph Horizon">Biograph Horizon</option>
-                        <option value="Symbia">Symbia</option>
-                        <option value="Artis">Artis</option>
-                        <option value="cios fit">Cios</option>
-                        <option value="Luminos">Luminos</option>
-                        <option value="Mammomat">Mammomat</option>
-                        <option value="Multix">Multix</option>
-                        <option value="Mobilett elara max">Mobilett elara max</option>
-                        <option value="Yasio max">Yasio max</option>
-                        {/* <!-- EXTRA END --> */}
-                        <option value="CT">CT</option>
-                        <option value="LBO">LBO</option>
-                        <option value="MI">MI</option>
-                        {/* <option value="XP">XP</option> */}
-                        <option value="somatam">somatam</option> {/*<!-- REMAINING --> */}
-                        <option value="Equipment">Tools</option>
-                        <option value="Syngo">Syngo</option>
+                        <option value="Drum/ Barell">Drum/ Barell</option>
+                        <option value="Bags">Bags</option>
+                        <option value="Box">Box</option>
+                        <option value="Carboy">Carboy</option>
+                        <option value="Bucket">Bucket</option>
                         <option value="Others">Others</option>
                       </select>
                     </div>

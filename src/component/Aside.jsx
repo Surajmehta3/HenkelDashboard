@@ -168,8 +168,8 @@ const Aside = () => {
                 className="aside-select"
               >
                 <option>{user ? user : "VIEW BY ALL"}</option>
-                <option value="VIEW BY ALL">VIEW BY ALL</option>
-                <option value={null}>Monil Choksi</option>
+                {/* <option value="VIEW BY ALL">VIEW BY ALL</option> */}
+                {/* <option value={null}>Monil Choksi</option>
                 <option value="Adinath Tajne">Adinath Tajne</option>
                 <option value="Aditya Kandharkar">Aditya Kandharkar</option>
                 <option value="Chintamani Mayeka">Chintamani Mayeka</option>
@@ -180,7 +180,7 @@ const Aside = () => {
                 <option value="Vijay Mahtre">Vijay Mahtre</option>
                 <option value="Sagar kadam">Sagar kadam</option>
                 <option value="Arti Rajput">Arti Rajput</option>
-                <option value="Surekha Ghamare">Surekha Ghamare</option>
+                <option value="Surekha Ghamare">Surekha Ghamare</option> */}
               </select>
             </div>
 
