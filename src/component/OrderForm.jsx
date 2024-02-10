@@ -8,6 +8,7 @@ import { useAlert } from "react-alert";
 import { Autocomplete, TextField } from "@mui/material";
 import Loader from "./Loader";
 import { city } from "./common";
+import Multiselect from "multiselect-react-dropdown";
 
 export default function OrderForm() {
   const alert = useAlert();
@@ -56,6 +57,39 @@ export default function OrderForm() {
     lat: 0,
     long: 0,
   });
+  const [multiSelectInput, setMultiSelectInput] = useState({
+    remove: "false",
+    select: "false"
+  })
+  const [originSelect, setOriginSelect] = useState([])
+  console.log(originSelect, 'originSelect')
+
+  const [originFilter, setOriginFilter] = useState([
+    {
+      cat: 'Group 1',
+      key: 'Drum/ Barell'
+    },
+    {
+      cat: 'Group 2',
+      key: 'Bags'
+    },
+    {
+      cat: 'Group 3',
+      key: 'Box'
+    },
+    {
+      cat: 'Group 4',
+      key: 'Carboy'
+    },
+    {
+      cat: 'Group 5',
+      key: 'Bucket'
+    },
+    {
+      cat: 'Group 6',
+      key: 'Others'
+    }
+  ])
 
   let timeoutId;
 
@@ -116,8 +150,8 @@ export default function OrderForm() {
     const formattedDateTime = `${year}-${month.toString().padStart(2, "0")}-${day
       .toString()
       .padStart(2, "0")} ${hours.toString().padStart(2, "0")}:${minutes
-      .toString()
-      .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+        .toString()
+        .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
     return formattedDateTime;
   };
 
@@ -178,8 +212,6 @@ export default function OrderForm() {
     }
   };
 
-  console.log(selectedCity, "selectedCityselectedCityselectedCity");
-
   const handleSubmit = async (e) => {
     setloader(true);
     e.preventDefault();
@@ -207,14 +239,15 @@ export default function OrderForm() {
 
     var from = "";
     var to = "";
-    console.log(inputs, "inputs");
-    if ((selectedCity.label && originLocation) || (selectedCity.label && inputs.otherlocation)) {
+    console.log('into submit function')
+    console.log(destination, originLocation)
+    if (destination.city && originLocation) {
+      console.log(destination, originLocation)
       let config = {
         method: "get",
         maxBodyLength: Infinity,
-        url: `https://api.openrouteservice.org/geocode/search?api_key=5b3ce3597851110001cf6248bb03350ac5bf425fab2182fab129903c&text=${
-          originLocation || inputs.otherlocation
-        }&sources=openstreetmap&layers=address&boundary.country=IND`,
+        url: `https://api.openrouteservice.org/geocode/search?api_key=5b3ce3597851110001cf6248bb03350ac5bf425fab2182fab129903c&text=${originLocation
+          }&sources=openstreetmap&layers=address&boundary.country=IND`,
         headers: {
           "Content-Type": "application/json; charset=utf-8",
           Accept:
@@ -225,17 +258,20 @@ export default function OrderForm() {
       let config1 = {
         method: "get",
         maxBodyLength: Infinity,
-        url: `https://api.openrouteservice.org/geocode/search?api_key=5b3ce3597851110001cf6248bb03350ac5bf425fab2182fab129903c&text=${selectedCity.label}&sources=openstreetmap&layers=address&boundary.country=IND`,
+        url: `https://api.openrouteservice.org/geocode/search?api_key=5b3ce3597851110001cf6248bb03350ac5bf425fab2182fab129903c&text=${destination.city}&sources=openstreetmap&layers=address&boundary.country=IND`,
         headers: {},
       };
+
+      console.log("before config")
 
       let latlong = await axios
         .request(config)
         .then((response) => {
+          console.log(response, "responseresponse after config")
           setFrom(
             response.data.features[0].geometry.coordinates[0] +
-              "," +
-              response.data.features[0].geometry.coordinates[1]
+            "," +
+            response.data.features[0].geometry.coordinates[1]
           );
           from =
             response.data.features[0].geometry.coordinates[0] +
@@ -244,10 +280,12 @@ export default function OrderForm() {
           axios
             .request(config1)
             .then(async (res) => {
+              console.log(res, "res after config")
+
               setTo(
                 res.data.features[0].geometry.coordinates[0] +
-                  "," +
-                  res.data.features[0].geometry.coordinates[1]
+                "," +
+                res.data.features[0].geometry.coordinates[1]
               );
               to =
                 res.data.features[0].geometry.coordinates[0] +
@@ -259,7 +297,7 @@ export default function OrderForm() {
               let config = {
                 method: "get",
                 maxBodyLength: Infinity,
-                url: `https://api.openrouteservice.org/v2/directions/driving-car?api_key=5b3ce3597851110001cf624833f8055ba65e4ca0b09b4e056e4ca312&start=${from}&end=${to}`,
+                url: `https://api.openrouteservice.org/v2/directions/driving-car?api_key=5b3ce3597851110001cf6248bb03350ac5bf425fab2182fab129903c&start=${from}&end=${to}`,
                 headers: {
                   "Content-Type": "application/json; charset=utf-8",
                   Accept:
@@ -301,7 +339,7 @@ export default function OrderForm() {
                     sonumber: inputs.sonumber,
                     wbscost: inputs.wbscost,
                     shplinstructions: inputs.shplinstructions,
-                    material: inputs.material === "Others" ? inputs.othermaterial : inputs.material,
+                    material: originSelect,
                     expecteddeliverydate: new Date(inputs.expecteddeliverydate).getTime(),
                     // "pmname": inputs.pmname,
                     // "pmnumber": inputs.pmnumber,
@@ -365,40 +403,40 @@ export default function OrderForm() {
                     });
                 }
 
-                let mailConfig = {
-                  method: "post",
-                  maxBodyLength: Infinity,
-                  // url: 'http://localhost:8000/sendMail',
-                  url: "https://apml-api-b1.glitch.me/api/v1/sendMail",
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                  data: {
-                    sonumber: inputs.sonumber,
-                    origin: inputs.Origin,
-                    shiptoparty: inputs.shiptoparty,
-                    city: selectedCity?.label,
-                    material: inputs.material,
-                    ordernumber: "APML000" + orderNumberCount,
-                    orderby: inputs.orderby,
-                    pmname: inputs.pmname,
-                    veh: veh,
-                    expecteddate: inputs.expecteddeliverydate,
-                    wbsnumber: inputs.wbscost,
-                    orderdate: convertmilisecond(miliseconds),
-                    totalvehicle: totalVeh,
-                    location: selectLocation,
-                    cc: ccNumbers,
-                  },
-                };
-                axios
-                  .request(mailConfig)
-                  .then((response) => {
-                    console.log("mail send successfully");
-                  })
-                  .catch((error) => {
-                    console.log(error);
-                  });
+                // let mailConfig = {
+                //   method: "post",
+                //   maxBodyLength: Infinity,
+                //   // url: 'http://localhost:8000/sendMail',
+                //   url: "https://apml-api-b1.glitch.me/api/v1/sendMail",
+                //   headers: {
+                //     "Content-Type": "application/json",
+                //   },
+                //   data: {
+                //     sonumber: inputs.sonumber,
+                //     origin: inputs.Origin,
+                //     shiptoparty: inputs.shiptoparty,
+                //     city: selectedCity?.label,
+                //     material: inputs.material,
+                //     ordernumber: "APML000" + orderNumberCount,
+                //     orderby: inputs.orderby,
+                //     pmname: inputs.pmname,
+                //     veh: veh,
+                //     expecteddate: inputs.expecteddeliverydate,
+                //     wbsnumber: inputs.wbscost,
+                //     orderdate: convertmilisecond(miliseconds),
+                //     totalvehicle: totalVeh,
+                //     location: selectLocation,
+                //     cc: ccNumbers,
+                //   },
+                // };
+                // axios
+                //   .request(mailConfig)
+                //   .then((response) => {
+                //     console.log("mail send successfully");
+                //   })
+                //   .catch((error) => {
+                //     console.log(error);
+                //   });
               } else {
                 alert.error("Please Try Again");
               }
@@ -667,66 +705,66 @@ export default function OrderForm() {
     return data;
   };
 
-//   const onMaterialChange = (e) => {
-//     const material = e.target.value;
-//     console.log(material, "material");
+  //   const onMaterialChange = (e) => {
+  //     const material = e.target.value;
+  //     console.log(material, "material");
 
-// // switch case to check the material and set the nth vehicle   
-//     switch (material) {
-//       case "MRI":
-//         setTotalVeh(3);
-//         setVeh(["SHPL - 20FT AIR SUSPENSION", "SHPL - 20 FT ODC", "SHPL - 20 FT ODC"]);
-//         break;
-//       case "RF":
-//         setTotalVeh(1);
-//         setVeh(["SHPL - 20 FT ODC"]);
-//         break;
-//       case "cios fit":
-//         setTotalVeh(1);
-//         setVeh(["SHPL - 20 FT ODC"]);
-//         break;
-//       case "CT":
-//         setTotalVeh(1);
-//         setVeh(["SHPL - 20 FT ODC"]);
-//         break;
-//       case "LBO":
-//         setTotalVeh(3);
-//         setVeh(["SHPL - PICK UP", "SHPL - PICK UP", "SHPL - 17ft VEHICLE"]);
-//         break;
-//       case "MI":
-//         setTotalVeh(3);
-//         setVeh(["SHPL - 20FT AIR SUSPENSION", "SHPL - 20 FT ODC", "SHPL - 20 FT ODC"]);
-//         break;
-//       case "Biograph Horizon":
-//         setTotalVeh(3);
-//         setVeh(["SHPL - 20FT AIR SUSPENSION", "SHPL - 20 FT ODC", "SHPL - 20 FT ODC"]);
-//         break;
-//       case "Symbia":
-//         setTotalVeh(3);
-//         setVeh(["SHPL - 20FT AIR SUSPENSION", "SHPL - 20 FT ODC", "SHPL - 20 FT ODC"]);
-//         break;
-//       case "Artis":
-//         setTotalVeh(2);
-//         setVeh(["SHPL - 20 FT ODC", "SHPL - 20 FT ODC"]);
-//         break;
-//       case "Mammomat":
-//         setTotalVeh(1);
-//         setVeh(["SHPL - 20 FT ODC"]);
-//         break;
-//       case "Multix":
-//         setTotalVeh(1);
-//         setVeh(["SHPL - 20 FT ODC"]);
-//         break;
-//       case "Mobilett elara max":
-//         setTotalVeh(1);
-//         setVeh(["SHPL - 20 FT ODC"]);
-//         break;
-//       case "Yasio max":
-//         setTotalVeh(1);
-//         setVeh(["SHPL - 20 FT ODC"]);
-//         break;
-//     }
-//   };
+  // // switch case to check the material and set the nth vehicle   
+  //     switch (material) {
+  //       case "MRI":
+  //         setTotalVeh(3);
+  //         setVeh(["SHPL - 20FT AIR SUSPENSION", "SHPL - 20 FT ODC", "SHPL - 20 FT ODC"]);
+  //         break;
+  //       case "RF":
+  //         setTotalVeh(1);
+  //         setVeh(["SHPL - 20 FT ODC"]);
+  //         break;
+  //       case "cios fit":
+  //         setTotalVeh(1);
+  //         setVeh(["SHPL - 20 FT ODC"]);
+  //         break;
+  //       case "CT":
+  //         setTotalVeh(1);
+  //         setVeh(["SHPL - 20 FT ODC"]);
+  //         break;
+  //       case "LBO":
+  //         setTotalVeh(3);
+  //         setVeh(["SHPL - PICK UP", "SHPL - PICK UP", "SHPL - 17ft VEHICLE"]);
+  //         break;
+  //       case "MI":
+  //         setTotalVeh(3);
+  //         setVeh(["SHPL - 20FT AIR SUSPENSION", "SHPL - 20 FT ODC", "SHPL - 20 FT ODC"]);
+  //         break;
+  //       case "Biograph Horizon":
+  //         setTotalVeh(3);
+  //         setVeh(["SHPL - 20FT AIR SUSPENSION", "SHPL - 20 FT ODC", "SHPL - 20 FT ODC"]);
+  //         break;
+  //       case "Symbia":
+  //         setTotalVeh(3);
+  //         setVeh(["SHPL - 20FT AIR SUSPENSION", "SHPL - 20 FT ODC", "SHPL - 20 FT ODC"]);
+  //         break;
+  //       case "Artis":
+  //         setTotalVeh(2);
+  //         setVeh(["SHPL - 20 FT ODC", "SHPL - 20 FT ODC"]);
+  //         break;
+  //       case "Mammomat":
+  //         setTotalVeh(1);
+  //         setVeh(["SHPL - 20 FT ODC"]);
+  //         break;
+  //       case "Multix":
+  //         setTotalVeh(1);
+  //         setVeh(["SHPL - 20 FT ODC"]);
+  //         break;
+  //       case "Mobilett elara max":
+  //         setTotalVeh(1);
+  //         setVeh(["SHPL - 20 FT ODC"]);
+  //         break;
+  //       case "Yasio max":
+  //         setTotalVeh(1);
+  //         setVeh(["SHPL - 20 FT ODC"]);
+  //         break;
+  //     }
+  //   };
 
   const handleClick = () => {
     if (!isAnimating) {
@@ -931,13 +969,13 @@ export default function OrderForm() {
                         }}
                         required
                       >
-                        <option value="">--Select--</option>
+                        {/* <option value="">--Select--</option> */}
                         <option value="1">1</option>
-                        
+
                       </select>
                     </div>
 
-                    {totalVeh >= 1 && (
+                    
                       <div>
                         <label>Vehicle Type:</label>
 
@@ -1054,16 +1092,16 @@ export default function OrderForm() {
                           <option value="PTL">PTL</option>
                         </select>
                       </div>
-                    )}
+                    
                     {selectedTransportation === 'PTL' && (
-                    <div>
-                      <label>Capacity</label>
-                      <input
-                        value={selectedAmount}
-                        type="text"
-                        onChange={(e) => setSelectedAmount(e.target.value)}
-                      />
-                    </div>
+                      <div>
+                        <label>Capacity</label>
+                        <input
+                          value={selectedAmount}
+                          type="text"
+                          onChange={(e) => setSelectedAmount(e.target.value)}
+                        />
+                      </div>
                     )}
 
                     <div className="orderform-checkbox-input">
@@ -1106,33 +1144,6 @@ export default function OrderForm() {
                   </div>
 
                   <div style={{ flexDirection: "column", margin: "1rem" }}>
-                    <div>
-                      <label>Order By</label>
-                      <select
-                        name="orderby"
-                        id="orderby"
-                        onChange={handleChanges}
-                        required
-                      >
-                        <option value="">--Select--</option>
-                        <option value="Adinath Tajne">Adinath Tajne</option>
-                        <option value="Aditya Kandharkar">Aditya Kandharkar</option>
-                        <option value="Chintamani Mayeka">Chintamani Mayeka</option>
-                        <option value="Jayesh Uniyal">Jayesh Uniyal</option>
-                        <option value="Sujoy Dey">Sujoy Dey</option>
-                        <option value="Mrirani Das">Mrirani Das</option>
-                        <option value="Vijay Mahtre">Vijay Mahtre</option>
-                        <option value="Sagar kadam">Sagar kadam</option>
-                        <option value="Surekha Ghamare">Surekha Ghamare</option>
-                        <option value="Arti Rajput">Arti Rajput</option>
-                        <option value="Dayanand Naik">Dayanand Naik</option>
-                        <option value="Narayanan E">Narayanan E</option>
-                        <option value="Urvish Jain">Urvish Jain</option>
-                        <option value="Amit Patekar">Amit Patekar</option>
-                        <option value="Swati Nandi">Swati Nandi</option>
-                        <option value="APML TEST">APML TEST</option>
-                      </select>
-                    </div>
 
                     <div>
                       <label>Pickup Date:</label>
@@ -1279,7 +1290,7 @@ export default function OrderForm() {
                   <div style={{ flexDirection: "row", margin: "1rem" }}>
                     <div>
                       <label>Material</label>
-                      <select
+                      {/* <select
                         name="material"
                         onChange={(e) => {
                           handleChanges(e);
@@ -1294,7 +1305,28 @@ export default function OrderForm() {
                         <option value="Carboy">Carboy</option>
                         <option value="Bucket">Bucket</option>
                         <option value="Others">Others</option>
-                      </select>
+                      </select> */}
+                      <Multiselect
+                        style={{ color: "black" }}
+                        displayValue="key"
+                        onKeyPressFn={(e) => {
+                        }}
+                        onRemove={(e) => {
+                          setOriginSelect(e)
+                          setMultiSelectInput((prevState) => ({ ...prevState, remove: true, select: false }))
+                        }}
+                        onSearch={(e) => { }}
+                        onSelect={(e) => {
+                          setOriginSelect(e)
+                          setMultiSelectInput((prevState) => ({ ...prevState, select: true, remove: false }))
+                        }}
+                        color={"black"}
+                        textTransform={"uppercase"}
+                        border={"2px solid black"}
+                        options={originFilter}
+                        placeholder="Origin Filter"
+                        selectedValueDecorator={(e) => { }}
+                      />
                     </div>
 
                     {inputs.material === "Others" && (
