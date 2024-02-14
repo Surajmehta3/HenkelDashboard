@@ -11,6 +11,7 @@ import { city } from "./common";
 import Multiselect from "multiselect-react-dropdown";
 
 export default function OrderForm() {
+
   const alert = useAlert();
   const form = useRef();
   const date = new Date();
@@ -62,7 +63,7 @@ export default function OrderForm() {
     select: "false"
   })
   const [originSelect, setOriginSelect] = useState([])
-  console.log(originSelect, 'originSelect')
+  // console.log(originSelect, 'originSelect')
 
   const [originFilter, setOriginFilter] = useState([
     {
@@ -90,13 +91,16 @@ export default function OrderForm() {
       key: 'Others'
     }
   ])
+ 
+  ////for mapping
 
+  
   let timeoutId;
 
   const getDatas = async () => {
     setOrderNumberLoader(true);
     const res = await axios.get("https://apml-api-b1.glitch.me/api/v1/get/OrderCount");
-    console.log(res);
+    // console.log(res);
     setOrderNumberCount(res.data.data);
     setOrderNumberLoader(false);
   };
@@ -160,7 +164,7 @@ export default function OrderForm() {
   const showRoute = async (e) => {
     const Value = e.target.value;
     clearTimeout(timeoutId); // Clear any previous timeouts
-    console.log(Value.length);
+    // console.log(Value.length);
     // City?.getAllCities()?.map((city, index) => {
     //   setSuggestions(city.name)
     // })
@@ -194,13 +198,13 @@ export default function OrderForm() {
             setSuggestions(data);
           })
           .catch((error) => {
-            console.log(error);
+            // console.log(error);
           });
       } else if (Value.length <= 1) {
         setSuggestions([]);
       }
     }, 300); // Wait for 300 milliseconds after the user stops typing
-    console.log(Suggestions, "Suggestions");
+    // console.log(Suggestions, "Suggestions");
   };
   const handlePlaceSelect = (selectedValue) => {
     if (selectedValue && selectedValue.coordinates) {
@@ -239,10 +243,10 @@ export default function OrderForm() {
 
     var from = "";
     var to = "";
-    console.log('into submit function')
-    console.log(destination, originLocation)
+    // console.log('into submit function')
+    // console.log(destination, originLocation)
     if (destination.city && originLocation) {
-      console.log(destination, originLocation)
+      // console.log(destination, originLocation)
       let config = {
         method: "get",
         maxBodyLength: Infinity,
@@ -262,12 +266,12 @@ export default function OrderForm() {
         headers: {},
       };
 
-      console.log("before config")
+      // console.log("before config")
 
       let latlong = await axios
         .request(config)
         .then((response) => {
-          console.log(response, "responseresponse after config")
+          // console.log(response, "responseresponse after config")
           setFrom(
             response.data.features[0].geometry.coordinates[0] +
             "," +
@@ -280,7 +284,7 @@ export default function OrderForm() {
           axios
             .request(config1)
             .then(async (res) => {
-              console.log(res, "res after config")
+              // console.log(res, "res after config")
 
               setTo(
                 res.data.features[0].geometry.coordinates[0] +
@@ -293,7 +297,7 @@ export default function OrderForm() {
                 res.data.features[0].geometry.coordinates[1];
               // console.log(from, to, "from to")
               // console.log(froms, tos, "froms tos")
-              console.log(from, to, "after openroute api");
+              // console.log(from, to, "after openroute api");
               let config = {
                 method: "get",
                 maxBodyLength: Infinity,
@@ -304,18 +308,20 @@ export default function OrderForm() {
                     "application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8",
                 },
               };
-              console.log("after the openroute api");
+              // console.log("after the openroute api");
               console.log(orderNumberCount, "orderNumberCount");
 
               if (orderNumberCount > 0) {
                 let char = ["a", "b", "c"];
-                for (let i = 0; i < totalVeh; i++) {
+                console.log(totalVeh)
+               
                   let orders = [];
-                  let orderNumber = `APML000${orderNumberCount}`;
-                  if (totalVeh > 1) {
-                    const charIndex = i < char.length ? i : i % char.length;
-                    orderNumber += `(${char[charIndex]})`;
-                  }
+                  const randomNumber = Math.floor(Math.random() * 90000) + 10000;
+                  let orderNumber = `APML000${randomNumber}`;
+                  // if (totalVeh > 1) {
+                  //   const charIndex = i < char.length ? i : i % char.length;
+                  //   orderNumber += `(${char[charIndex]})`;
+                  // }
                   var datas = {
                     orderNumber: orderNumber,
                     origin: selectOrigin,
@@ -325,7 +331,7 @@ export default function OrderForm() {
                       inputs.Origin === "Henkel-Others"
                         ? inputs.otherlocation
                         : selectLocation || "null",
-                    vehicletype: veh[i],
+                    vehicletype: veh[1],
                     totalvehicle: totalVeh,
                     transportationservice: inputs.tranportationservice,
                     loadingscope: loadingCharges,
@@ -360,10 +366,11 @@ export default function OrderForm() {
                     customer: "Henkel",
                     mydate: miliseconds,
                   };
+                  console.log(datas)
 
                   orders.push(datas);
 
-                  console.log(orders);
+                  // console.log(orders);
 
                   var obj = {
                     Order: datas,
@@ -373,7 +380,7 @@ export default function OrderForm() {
 
                   var updatedObject = { ...obj };
 
-                  console.log(updatedObject);
+                  // console.log(updatedObject);
 
                   let config = {
                     method: "post",
@@ -384,9 +391,10 @@ export default function OrderForm() {
                     },
                     data: updatedObject,
                   };
+                  console.log("config: " + config);
 
                   setloader(true);
-                  console.log(updatedObject, "updatedObjectupdatedObject");
+                  // console.log(updatedObject, "updatedObjectupdatedObject");
                   axios
                     .request(config)
                     .then((response) => {
@@ -401,7 +409,8 @@ export default function OrderForm() {
                       setloader(false);
                       alert.error("order have not placed");
                     });
-                }
+                
+                
 
                 // let mailConfig = {
                 //   method: "post",
@@ -432,7 +441,7 @@ export default function OrderForm() {
                 // axios
                 //   .request(mailConfig)
                 //   .then((response) => {
-                //     console.log("mail send successfully");
+                    // console.log("mail send successfully");
                 //   })
                 //   .catch((error) => {
                 //     console.log(error);
@@ -460,6 +469,7 @@ export default function OrderForm() {
         });
     }
   };
+
 
   // switch case for origin location select
   const SelectOrigin = (so) => {
@@ -775,7 +785,7 @@ export default function OrderForm() {
     }
   };
   //
-  console.log(veh, "vehvehvehveh");
+  // console.log(veh, "vehvehvehveh");
   var arr = [veh[0], veh[1], veh[2]];
 
   const handleVeh1Index = (e) => {
@@ -784,6 +794,8 @@ export default function OrderForm() {
       vehicle1Index: true,
     }));
   };
+
+
 
   // const handleVeh2Index = (e) => {
   //   setVehicleIndex((prevState) => ({
@@ -797,6 +809,7 @@ export default function OrderForm() {
   //     vehicle3Index: true,
   //   }));
   // };
+  
   useEffect(() => {
     var token = sessionStorage.getItem("id");
     if (token) {
@@ -806,7 +819,7 @@ export default function OrderForm() {
     }
   }, []);
 
-  console.log(orderNumberCount, "orderNumberCountorderNumberCountdd");
+  // console.log(orderNumberCount, "orderNumberCountorderNumberCountdd");
 
   return (
     <>
@@ -1263,7 +1276,7 @@ export default function OrderForm() {
                         )}
                         required
                       />
-                      {console.log(destination, "destinationdestination")}
+                      {/* {console.log(destination, "destinationdestination")} */}
                     </div>
 
                     {/* <div>
@@ -1290,22 +1303,7 @@ export default function OrderForm() {
                   <div style={{ flexDirection: "row", margin: "1rem" }}>
                     <div>
                       <label>Material</label>
-                      {/* <select
-                        name="material"
-                        onChange={(e) => {
-                          handleChanges(e);
-                          // onMaterialChange(e);
-                        }}
-                        required
-                      >
-                        <option value="">--Select--</option>
-                        <option value="Drum/ Barell">Drum/ Barell</option>
-                        <option value="Bags">Bags</option>
-                        <option value="Box">Box</option>
-                        <option value="Carboy">Carboy</option>
-                        <option value="Bucket">Bucket</option>
-                        <option value="Others">Others</option>
-                      </select> */}
+                      
                       <Multiselect
                         style={{ color: "black" }}
                         displayValue="key"
