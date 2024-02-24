@@ -3,30 +3,26 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import Loader from "./Loader";
 import { FaList } from "react-icons/fa";
-import { BsArrowDownUp } from "react-icons/bs";
-
 import { utils, writeFile } from "xlsx";
 import { useNavigate } from "react-router-dom";
-import { pendingheader } from "./common";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchData } from "../features/orderDetailSlice"
 
 const PendingOrder = () => {
-  const user = sessionStorage.getItem("user");
   const nagivate = useNavigate();
   const [pendingData, setPendingData] = useState([])
   const [loader, setLoader] = useState(true)
-  const [sorting, setSorting] = useState(false)
-  const [sortableData, setSortableData] = useState([])
 
   const gettingData = async () => {
     let status = 'Pending Order'
     let OrderStatus = "active"
-    var enrouteData = await axios.get(`https://apml-api-b1.glitch.me/api/v1/henkel/orders?keyword=Henkel&keyword1=${status}&keyword2=${OrderStatus}`)
+    var enrouteData = await axios.get(`https://apml-api-b1.glitch.me/api/v1/henkel/orders?keyword=${sessionStorage.getItem('customer')}&keyword1=${status}&keyword2=${OrderStatus}`)
     setPendingData(enrouteData)
-    setSortableData(enrouteData?.data?.data)
     setLoader(false)
+    console.log(pendingData,"pendingDatapendingData")
 
     let data = {
-      'pendingCount': enrouteData?.data?.data?.length
+      'HenkelPendingCount': enrouteData?.data?.data?.length
     };
 
     let config = {
@@ -44,20 +40,6 @@ const PendingOrder = () => {
       .catch((error) => {
         console.log(error)
       });
-  }
-
-  console.log(sortableData, "sortableDatasortableData")
-
-  const Sort = (type) => {
-    const sortablTable = pendingData?.data?.data.sort((a, b) => {
-      // console.log(parseInt(a[type]), "parint")
-      // console.log(`${b[type]}`.localeCompare(`${a[type]}`), "compare b a ")
-      // console.log(`${a[type]}`.localeCompare(`${b[type]}`), "compare a b")
-      if (sorting) return `${b.Order[type]}`.localeCompare(`${a.Order[type]}`)
-      else return `${a.Order[type]}`.localeCompare(`${b.Order[type]}`)
-    })
-    setSorting(!sorting)
-    setSortableData(sortablTable)
   }
 
   function differentdate(a) {
@@ -91,17 +73,6 @@ const PendingOrder = () => {
     return re;
   }
 
-  const exportExcelFile = () => {
-    const element = document.getElementById("excel_table");
-    let ws = utils.table_to_sheet(element);
-    /* generate workbook and add the worksheet */
-    let wb = utils.book_new();
-    utils.book_append_sheet(wb, ws, "Sheet1");
-    /* save to file */
-    writeFile(wb, "sample.xlsx");
-  };
-
-
   const convertmilisecond = (mydate) => {
     const milliseconds = mydate;
     const date = new Date(milliseconds);
@@ -116,6 +87,17 @@ const PendingOrder = () => {
     return formattedDateTime
   }
 
+  const exportExcelFile = () => {
+    const element = document.getElementById("excel_table");
+    let ws = utils.table_to_sheet(element);
+    /* generate workbook and add the worksheet */
+    let wb = utils.book_new();
+    utils.book_append_sheet(wb, ws, "Sheet1");
+    /* save to file */
+    writeFile(wb, "sample.xlsx");
+  };
+
+
   useEffect(() => {
     const token = sessionStorage.getItem("id");
     if (token) {
@@ -124,6 +106,8 @@ const PendingOrder = () => {
       nagivate("/login")
     }
   }, []);
+
+
 
   return (
     <>
@@ -150,55 +134,65 @@ const PendingOrder = () => {
             <table className="main-table" id="excel_table">
               <thead>
                 <tr>
-                  {
-                    pendingheader.map((val, index) => {
-                      return (
-                        <th className="table-th" key={index} onClick={() => {
-                          Sort(`${val}`)
-                        }}>{val} <BsArrowDownUp className="table-filter-icon" /></th>
-                      )
-                    })
-                  }
+                  <th className="table-th">order number </th>
+                  <th className="table-th">Origin </th>
+                  <th className="table-th">Ship To Party </th>
+                  <th className="table-th">Ship To Address</th>
+                  <th className="table-th">Vehicles Types</th>
+                  <th className="table-th">Total vehicles</th>
+
+                  <th className="table-th">material</th>
+                  {/* <th className="table-th">No. of Vehicles</th> */}
+                  <th className="table-th">expected Pickup Date </th>
+                  <th className="table-th">expected DELIVERY Date </th>
+                  <th className="table-th">Order By </th>
+                  <th className="table-th">Order Date </th>
+                  <th className="table-th">instructions </th>
+                  <th className="table-th">Apml Remarks </th>
                 </tr>
               </thead>
 
               <tbody>
-                {sortableData.map((res) => {
-                  // console.log(res,"resres")
-                  // console.log(res, "order by")
-                  if (
-                    res.Order.orderby == user ||
-                    user == "VIEW BY ALL"
-                  ) {
-                    return (
-                      <tr>
-                        <td className="td-main">{res?.Order?.orderNumber ? res?.Order?.orderNumber : "No Order Number"}</td>
-                        <td className="td-main">{res?.Order?.origin ? res.Order.origin : "--"}</td>
-                        <td className="td-main" style={{ color: "rgb(16, 177, 231)", fontWeight: "bold" }}>{res?.Order?.shiptoparty ? res.Order.shiptoparty : "--"}</td>
-                        <td className="td-main" style={{ color: "rgb(16, 177, 231)", fontWeight: "bold" }}>{res?.Order?.shiptoaddress ? res.Order.shiptoaddress : "--"}</td>
-                        <td className="td-main">{res?.Order?.material ? res.Order.material : "--"}</td>
-                        <td className="td-main">{res?.Order?.totalvehicle ? res.Order.totalvehicle : "--"}</td>
-                        <td className="td-main" style={{
-                          fontWeight: "bold",
-                          color: differentdate(res?.Order?.pickupdate) > 21600000 &&
-                            differentdate(res?.Order?.pickupdate) < 86400000 ? "yellow"
-                            :
-                            differentdate(res?.Order?.pickupdate) > 21600000 &&
-                              differentdate(res?.Order?.pickupdate) < 86400000 ? "orange"
-                              : 'red'
-                        }}>
-                          {differentdate(res?.Order?.pickupdate)}
-                        </td>
-                        <td className="td-main"
-                          style={{ color: "#00ff00", fontWeight: "bold" }}
-                        >{differentdate(res?.Order?.expecteddeliverydate)}</td>
-                        <td className="td-main">{res?.Order?.orderby ? res.Order.orderby : "--"}</td>
-                        <td className="td-main">{res?.Order?.pickupdate ? convertmilisecond(res.Order.pickupdate) : "--"}</td>
-                        <td className="td-main">{res?.Order?.shplinstructions ? res.Order.shplinstructions : "--"}</td>
-                        <td className="td-main">{res?.Order.Enroute_Remark ? res.Order.Enroute_Remark : "--"}</td>
-                      </tr>
-                    )
-                  }
+                {pendingData?.data?.data.map((res) => {
+                  // console.log(res.Order.Order, "order by")
+                  // if (
+                  //   res.Order.orderby == user ||
+                  //   user == "VIEW BY ALL"
+                  // ) {
+                  return (
+                    <tr>
+                      <td className="td-main">{res?.Order?.orderNumber ? res?.Order?.orderNumber : "No Order Number"}</td>
+                      <td className="td-main">{res?.Order?.origin ? res.Order.origin : "--"}</td>
+                      <td className="td-main" style={{ color: "rgb(16, 177, 231)", fontWeight: "bold" }}>{res?.Order?.shiptoparty ? res.Order.shiptoparty : "--"}</td>
+                      <td className="td-main" style={{ color: "rgb(16, 177, 231)", fontWeight: "bold" }}>{res?.Order?.destination ? res.Order.destination : "--"}</td>
+                      {/* <td className="td-main" style={{ color: "rgb(16, 177, 231)", fontWeight: "bold" }}>{res?.Order?.partyinvoinceno ? res.Order.partyinvoinceno : "--"}</td> */}
+
+                      <td className="td-main" style={{ color: "rgb(16, 177, 231)", fontWeight: "bold" }}>{res?.Order?.vehicletype ? res.Order.vehicletype : "--"}</td>
+
+                      <td className="td-main" >{res?.Order?.totalvehicle ? res.Order.totalvehicle : "--"}</td>
+                      <td className="td-main">{res?.Order?.material ? res.Order.material : "--"}</td>
+                      {/* <td className="td-main">{res?.Order?.totavehicle ? res.Order.totalvehicle : "--"}</td> */}
+                      <td className="td-main" style={{
+                        fontWeight: "bold",
+                        color: differentdate(res?.Order?.pickupdate) > 21600000 &&
+                          differentdate(res?.Order?.pickupdate) < 86400000 ? "yellow"
+                          :
+                          differentdate(res?.Order?.pickupdate) > 21600000 &&
+                            differentdate(res?.Order?.pickupdate) < 86400000 ? "orange"
+                            : 'red'
+                      }}>
+                        {differentdate(res?.Order?.pickupdate)}
+                      </td>
+                      <td className="td-main"
+                        style={{ color: "#00ff00", fontWeight: "bold" }}
+                      >{differentdate(res?.Order?.expecteddeliverydate)}</td>
+                      <td className="td-main">{res?.Order?.orderby ? res?.Order?.orderby : "--"}</td>
+                      <td className="td-main">{res?.Order?.pickupdate ? convertmilisecond(res?.Order?.pickupdate) : "--"}</td>
+                      <td className="td-main">{res?.Order?.shplinstructions ? res.Order.shplinstructions : "--"}</td>
+                      <td className="td-main">{res?.Order?.Pending_Remark ? res.Order.Pending_Remark : "--"}</td>
+                    </tr>
+                  )
+                  // }
                 })}
               </tbody>
             </table>
@@ -209,4 +203,4 @@ const PendingOrder = () => {
   );
 };
 
-export default PendingOrder;
+export default PendingOrder; 

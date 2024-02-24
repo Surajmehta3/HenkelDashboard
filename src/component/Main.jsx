@@ -30,7 +30,7 @@ const Main = () => {
     let count = await axios.get("https://apml-api-b1.glitch.me/api/v1/HenkelCount")
     setOrderCount(count.data)
 
-    let Intransit = await axios.get(`https://apml-api-b1.glitch.me/api/v1/henkel/orders?keyword=Henkel&keyword1=${status}&keyword2=${OrderStatus}`)
+    let Intransit = await axios.get(`https://apml-api-b1.glitch.me/api/v1/Henkel/orders?keyword=Henkel&keyword1=${status}&keyword2=${OrderStatus}`)
 
     setIntransit(Intransit.data.data)
     // console.log(intransit[0].Order.from,"intransitintransit")

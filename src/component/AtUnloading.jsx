@@ -24,7 +24,7 @@ const AtUnloading = () => {
   const customer = sessionStorage.getItem("customer")
 
   const gettingData = async () => {
-    let customer = 'siemens'
+    let customer = 'Henkel'
     let status = 'At Unloading'
     let OrderStatus = "active"
     var enrouteData = await axios.get(`https://apml-api-b1.glitch.me/api/v1/henkel/orders?keyword=Henkel&keyword1=${status}&keyword2=${OrderStatus}`)
