@@ -19,7 +19,7 @@ const PendingOrder = () => {
     var enrouteData = await axios.get(`https://apml-api-b1.glitch.me/api/v1/henkel/orders?keyword=${sessionStorage.getItem('customer')}&keyword1=${status}&keyword2=${OrderStatus}`)
     setPendingData(enrouteData)
     setLoader(false)
-    console.log(pendingData,"pendingDatapendingData")
+    console.log(pendingData, "pendingDatapendingData")
 
     let data = {
       'HenkelPendingCount': enrouteData?.data?.data?.length
@@ -98,6 +98,8 @@ const PendingOrder = () => {
   };
 
 
+
+
   useEffect(() => {
     const token = sessionStorage.getItem("id");
     if (token) {
@@ -142,7 +144,6 @@ const PendingOrder = () => {
                   <th className="table-th">Total vehicles</th>
 
                   <th className="table-th">material</th>
-                  {/* <th className="table-th">No. of Vehicles</th> */}
                   <th className="table-th">expected Pickup Date </th>
                   <th className="table-th">expected DELIVERY Date </th>
                   <th className="table-th">Order By </th>
@@ -153,47 +154,41 @@ const PendingOrder = () => {
               </thead>
 
               <tbody>
-                {pendingData?.data?.data.map((res) => {
-                  // console.log(res.Order.Order, "order by")
-                  // if (
-                  //   res.Order.orderby == user ||
-                  //   user == "VIEW BY ALL"
-                  // ) {
-                  return (
-                    <tr>
-                      <td className="td-main">{res?.Order?.orderNumber ? res?.Order?.orderNumber : "No Order Number"}</td>
-                      <td className="td-main">{res?.Order?.origin ? res.Order.origin : "--"}</td>
-                      <td className="td-main" style={{ color: "rgb(16, 177, 231)", fontWeight: "bold" }}>{res?.Order?.shiptoparty ? res.Order.shiptoparty : "--"}</td>
-                      <td className="td-main" style={{ color: "rgb(16, 177, 231)", fontWeight: "bold" }}>{res?.Order?.destination ? res.Order.destination : "--"}</td>
-                      {/* <td className="td-main" style={{ color: "rgb(16, 177, 231)", fontWeight: "bold" }}>{res?.Order?.partyinvoinceno ? res.Order.partyinvoinceno : "--"}</td> */}
+                {
+                  pendingData?.data?.data.map((res) => {
+                    return (
+                      <tr>
+                        <td className="td-main">{res?.Order?.orderNumber ? res?.Order?.orderNumber : "No Order Number"}</td>
+                        <td className="td-main">{res?.Order?.origin ? res.Order.origin : "--"}</td>
+                        <td className="td-main" style={{ color: "rgb(16, 177, 231)", fontWeight: "bold" }}>{res?.Order?.shiptoparty ? res.Order.shiptoparty : "--"}</td>
+                        <td className="td-main" style={{ color: "rgb(16, 177, 231)", fontWeight: "bold" }}>{res?.Order?.destination ? res.Order.destination : "--"}</td>
 
-                      <td className="td-main" style={{ color: "rgb(16, 177, 231)", fontWeight: "bold" }}>{res?.Order?.vehicletype ? res.Order.vehicletype : "--"}</td>
+                        <td className="td-main" style={{ color: "rgb(16, 177, 231)", fontWeight: "bold" }}>{res?.Order?.vehicletype ? res.Order.vehicletype : "--"}</td>
 
-                      <td className="td-main" >{res?.Order?.totalvehicle ? res.Order.totalvehicle : "--"}</td>
-                      <td className="td-main">{res?.Order?.material ? res.Order.material : "--"}</td>
-                      {/* <td className="td-main">{res?.Order?.totavehicle ? res.Order.totalvehicle : "--"}</td> */}
-                      <td className="td-main" style={{
-                        fontWeight: "bold",
-                        color: differentdate(res?.Order?.pickupdate) > 21600000 &&
-                          differentdate(res?.Order?.pickupdate) < 86400000 ? "yellow"
-                          :
-                          differentdate(res?.Order?.pickupdate) > 21600000 &&
-                            differentdate(res?.Order?.pickupdate) < 86400000 ? "orange"
-                            : 'red'
-                      }}>
-                        {differentdate(res?.Order?.pickupdate)}
-                      </td>
-                      <td className="td-main"
-                        style={{ color: "#00ff00", fontWeight: "bold" }}
-                      >{differentdate(res?.Order?.expecteddeliverydate)}</td>
-                      <td className="td-main">{res?.Order?.orderby ? res?.Order?.orderby : "--"}</td>
-                      <td className="td-main">{res?.Order?.pickupdate ? convertmilisecond(res?.Order?.pickupdate) : "--"}</td>
-                      <td className="td-main">{res?.Order?.shplinstructions ? res.Order.shplinstructions : "--"}</td>
-                      <td className="td-main">{res?.Order?.Pending_Remark ? res.Order.Pending_Remark : "--"}</td>
-                    </tr>
-                  )
-                  // }
-                })}
+                        <td className="td-main" >{res?.Order?.totalvehicle ? res?.Order?.totalvehicle : "--"}</td>
+                       
+                        <td className="td-main">{res?.Order?.material[0]?.key} , {res?.Order?.material[1]?.key} , {res?.Order?.material[2]?.key} , {res?.Order?.material[3]?.key} , {res?.Order?.material[4]?.key}</td>
+                        <td className="td-main" style={{
+                          fontWeight: "bold",
+                          color: differentdate(res?.Order?.pickupdate) > 21600000 &&
+                            differentdate(res?.Order?.pickupdate) < 86400000 ? "yellow"
+                            :
+                            differentdate(res?.Order?.pickupdate) > 21600000 &&
+                              differentdate(res?.Order?.pickupdate) < 86400000 ? "orange"
+                              : 'red'
+                        }}>
+                          {differentdate(res?.Order?.pickupdate)}
+                        </td>
+                        <td className="td-main"
+                          style={{ color: "#00ff00", fontWeight: "bold" }}
+                        >{differentdate(res?.Order?.expecteddeliverydate)}</td>
+                        <td className="td-main">{res?.Order?.orderby ? res?.Order?.orderby : "--"}</td>
+                        <td className="td-main">{res?.Order?.pickupdate ? convertmilisecond(res?.Order?.pickupdate) : "--"}</td>
+                        <td className="td-main">{res?.Order?.shplinstructions ? res.Order.shplinstructions : "--"}</td>
+                        <td className="td-main">{res?.Order?.Pending_Remark ? res.Order.Pending_Remark : "--"}</td>
+                      </tr>
+                    )
+                  })}
               </tbody>
             </table>
           </>

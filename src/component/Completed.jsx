@@ -600,7 +600,7 @@ const Completed = () => {
                           <td className="td-main">{res?.Order?.pickupdate ? convertmilisecond(res?.Order?.pickupdate) : "--"}</td>
                           <td className="td-main" style={{ textTransform: "uppercase" }}>{res?.vehicleAssign?.VehicleNumber}</td>
                           <td className="td-main">{res?.Order?.vehicletype}</td>
-                          <td className="td-main">{res?.Order?.material}</td>
+                        <td className="td-main">{res?.Order?.material[0]?.key} , {res?.Order?.material[1]?.key} , {res?.Order?.material[2]?.key} , {res?.Order?.material[3]?.key} , {res?.Order?.material[4]?.key}</td>
                           <td className="td-main">{res?.Order?.shiptoparty}</td>
                           <td className="td-main">{res?.Order?.shiptoaddress}</td>
                           <td className="td-main">--</td>
